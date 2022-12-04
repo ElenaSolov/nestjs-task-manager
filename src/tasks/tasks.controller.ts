@@ -12,7 +12,7 @@ import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './create-task.dto';
 import { GetTasksFilterDto } from './get-tasks-filter.dto';
 import { UpdateStatusDto } from './update-status.dto';
-import { Task } from './task.entity';
+import { TaskEntity } from './task.entity';
 
 @Controller('tasks')
 export class TasksController {
@@ -26,9 +26,8 @@ export class TasksController {
   //     return this.taskService.getAllTasks();
   //   }
   // }
-  //
   @Get(':id')
-  getById(@Param('id') id: string): Promise<Task> {
+  getById(@Param('id') id: string): Promise<TaskEntity> {
     return this.taskService.getById(id);
   }
   //
