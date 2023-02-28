@@ -4,7 +4,7 @@ import { CreateTaskDto } from './create-task.dto';
 import { GetTasksFilterDto } from './get-tasks-filter.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TaskEntity } from './task.entity';
-import { DeleteResult, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TasksService {
@@ -24,13 +24,11 @@ export class TasksService {
 
     if (search) {
       query.andWhere(
-        'task.title LIKE :search OR task.description LIKE :search ',
+        'LOWER(task.title) LIKE LOWER(:search) OR LOWER(task.description) LIKE LOWER(:search) ',
         { search: `%${search}%` },
       );
     }
-
-    const tasks = await query.getMany();
-    return tasks;
+    return await query.getMany();
   }
   async getById(id: string): Promise<TaskEntity> {
     const found = await this.tasksRepository.findOneBy({ id });
