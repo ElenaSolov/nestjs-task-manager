@@ -12,9 +12,26 @@ export class TasksService {
     @InjectRepository(TaskEntity)
     private tasksRepository: Repository<TaskEntity>,
   ) {}
-  // getAllTasks(): ITask[] {
-  //   return this.tasks;
-  // }
+
+  async getTasks(filterDto: GetTasksFilterDto): Promise<TaskEntity[]> {
+    const query = this.tasksRepository.createQueryBuilder('task');
+
+    const { search, status } = filterDto;
+
+    if (status) {
+      query.andWhere('task.status = :status', { status });
+    }
+
+    if (search) {
+      query.andWhere(
+        'task.title LIKE :search OR task.description LIKE :search ',
+        { search: `%${search}%` },
+      );
+    }
+
+    const tasks = await query.getMany();
+    return tasks;
+  }
   async getById(id: string): Promise<TaskEntity> {
     const found = await this.tasksRepository.findOneBy({ id });
     if (!found) {
@@ -22,25 +39,7 @@ export class TasksService {
     }
     return found;
   }
-  // getTasksWithFilter(filterDto: GetTasksFilterDto): ITask[] {
-  //   const { search, status } = filterDto;
-  //   console.log(status);
-  //   let tasks = this.tasks;
-  //   if (search) {
-  //     tasks = tasks.filter((task) => {
-  //       return (
-  //         task.title.toLowerCase().includes(search.toLowerCase()) ||
-  //         task.description.toLowerCase().includes(search.toLowerCase())
-  //       );
-  //     });
-  //   }
-  //   if (status) {
-  //     tasks = tasks.filter((task) => task.status === status);
-  //     console.log(tasks);
-  //   }
-  //   return tasks;
-  // }
-  //
+
   async createTask(createTaskDto: CreateTaskDto): Promise<TaskEntity> {
     const { title, description } = createTaskDto;
     const newTask = this.tasksRepository.create({
