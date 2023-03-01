@@ -8,7 +8,6 @@ export class AuthController {
 
   @Post('/signup')
   createUser(@Body() authCredentialsDto: AuthCredentialsDto): Promise<void> {
-    console.log(authCredentialsDto);
     return this.authService.createUser(authCredentialsDto);
   }
 }
