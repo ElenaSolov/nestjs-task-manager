@@ -36,6 +36,7 @@ export class AuthService {
         //duplicate username
         throw new ConflictException('Username already exist');
       } else {
+        console.log(err);
         throw new InternalServerErrorException();
       }
     }
